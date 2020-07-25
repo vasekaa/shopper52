@@ -30,7 +30,7 @@ class AppNavBar extends Component {
             <div className="container">
                 <nav className="navbar navbar-expand-lg navbar-light bg-light">
                     <Link to="/" className="nav-link">
-                        <h3> Shopper</h3>
+                        <h3> Shopper52</h3>
                     </Link>
                     {this.state.isAuthenticated ? (<div>
                         <button className="navbar-toggler mr-auto" type="button" data-toggle="collapse"

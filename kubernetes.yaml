@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: shopper
+  name: shopper
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shopper
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: shopper
+    spec:
+      containers:
+        - image: gcr.io/k8straning/github.com/vasekaa/shopper52
+          imagePullPolicy: IfNotPresent
+          name: shopper52-sha256-1
+---
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  labels:
+    app: shopper
+  name: shopper-hpa-ehba
+  namespace: default
+spec:
+  maxReplicas: 5
+  metrics:
+    - resource:
+        name: cpu
+        targetAverageUtilization: 80
+      type: Resource
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: shopper
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: shopper
+  name: shopper-service
+  namespace: default
+spec:
+  clusterIP: 10.0.9.129
+  externalTrafficPolicy: Cluster
+  ports:
+    - nodePort: 31088
+      port: 80
+      protocol: TCP
+      targetPort: 80
+  selector:
+    app: shopper
+  sessionAffinity: None
+  type: LoadBalancer

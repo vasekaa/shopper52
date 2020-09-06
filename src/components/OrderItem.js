@@ -12,9 +12,10 @@ class OrderItem extends Component {
         ItemName: this.props.matchItem.ItemName,
         key:this.props.matchItem.id,
         showPriceUpdate: false,
-        isCompleted: false
+        isCompleted: this.props.matchItem.isCompleted
     }
     onChange = (e) => {
+        console.log("onChange");
         this.setState({[e.target.name]: e.target.value});
     }
 
@@ -22,9 +23,8 @@ class OrderItem extends Component {
         e.preventDefault();
         const {orderId, firestore, matchItem} = this.props;
         let newOrderItem = {...matchItem};
-        newOrderItem = {ItemQuantity: this.state.ItemQuantity, ItemPrice: this.state.ItemPrice};
+        newOrderItem = {ItemQuantity: this.state.ItemQuantity, ItemPrice: this.state.ItemPrice, isCompleted: this.state.isCompleted };
         if (this.state.isNew) {
-            alert("10");
             firestore.add({collection: "Orders"}, newOrderItem)/*.then(()=>this.props.history.push("/"))*/;
         } else {
             firestore.update(
@@ -36,6 +36,25 @@ class OrderItem extends Component {
         }
 
     }
+
+    onIsCompleteChange = (e) => {
+//TODO check why after SetState State value is not updated imideatly - stil.l hassold value
+        e.preventDefault();
+        const newValue = !this.state.isCompleted;
+        this.setState({isCompleted: newValue});
+        const {orderId, firestore,matchItem } = this.props;
+        let newOrderItem = {...matchItem, isCompleted : newValue};
+        firestore.update(
+                {
+                    collection: 'Orders',
+                    doc: orderId,
+                    subcollections: [{collection: 'OrderItems', doc: matchItem.id}],
+                }, newOrderItem);
+
+
+    }
+
+
     onDeleteOrderItem = (e) => {
         e.preventDefault();
         const {orderId, firestore} = this.props;
@@ -50,7 +69,7 @@ class OrderItem extends Component {
     drawItemPrice = (showPriceUpdate, ItemQuantity, ItemPrice, ItemName, isCompleted) => {
 
         const ItemSection = (
-            <div className="row" onClick={() => this.setState({isCompleted: !this.state.isCompleted})}>
+            <div className="row" onClick={this.onIsCompleteChange.bind(this)}>
                 <div className="col-sm-4">
                     <span className="secondary-text">{ItemName}</span>
                 </div>

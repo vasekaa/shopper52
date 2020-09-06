@@ -51,10 +51,15 @@ class OrderDetails extends Component {
     render() {
         const {order, orderItems, departmentsAll, products} = this.props;
         const {showNewItem, ItemQuantity, ItemPrice, ItemName, ItemDepartment} = this.state;
-
+        console.log("rendered");
 
         if (order && orderItems && departmentsAll && products) {
             const ProductsNames = Array.from(products, prd => ({value: prd.Name, label: prd.Name}));
+            const OrderDepartmentNames = Array.from(orderItems, item => (item.DepartmentName));
+            const DepartmentFromOrder = departmentsAll.reduce((newArray,IterDpt)=>{
+               return OrderDepartmentNames.includes( IterDpt.Name)  ? [...newArray,IterDpt]: newArray;
+            },[]);
+
             let ItemForm = '';
             if (showNewItem) {
                 ItemForm = (
@@ -75,6 +80,7 @@ class OrderDetails extends Component {
                                     placeholder={"Название"}
                                     isClearable
                                     onChange={this.onChangeOffer}
+                                    
                                 />
                             </div>
                             <div className="col-12 col-md-10 my-2">
@@ -147,7 +153,7 @@ class OrderDetails extends Component {
                     </div>
                     <div className="row">
                         <div className="col-sm-12">
-                            {departmentsAll.map((department, index) => (
+                            {DepartmentFromOrder.map((department, index) => (
                                 <div className="accordion" id={"OrdersAccordion" + department.id}>
                                     <div className="card">
                                         <div className="card-header" id={"heading_" + department.id}>

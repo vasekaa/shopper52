@@ -1,9 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Link} from "react-router-dom";
-import PropTypes from 'prop-types';
-import {addEvent} from "../actions/eventActions";
-import { v4 as uuidv4 } from 'uuid';
 
 class AddOrder extends Component {
     state = {
@@ -15,7 +12,6 @@ class AddOrder extends Component {
 
     onSubmit = (e) => {
         e.preventDefault();
-        const id = uuidv4();
         const newEvent = {...this.state};
         this.props.addEvent(newEvent);
     }
@@ -63,4 +59,4 @@ class AddOrder extends Component {
     }
 }
 
-export default connect(null, {addEvent})(AddOrder);
+export default connect(null, {AddOrder})(AddOrder);

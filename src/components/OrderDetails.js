@@ -4,7 +4,6 @@ import {Link} from "react-router-dom";
 import {compose} from "redux";
 import {firestoreConnect} from "react-redux-firebase";
 import Spinner from "./layout/spinner";
-import Order from "./Order";
 import OrderItem from "./OrderItem";
 import Creatable from "react-select/creatable/dist/react-select.esm";
 
@@ -14,22 +13,40 @@ class OrderDetails extends Component {
         ItemQuantity: "1",
         ItemPrice: "",
         ItemDepartment: "",
-        ItemName: ""
+        ItemName: "",
+        OrderTotal: null
 
     }
+
+    static getDerivedStateFromProps(props, state) {
+        const {orderItems} = props;
+        if (orderItems) {
+            const total = orderItems.reduce((total, item) => {
+                if (item.ItemPrice.toString() === '' || item.ItemQuantity.toString() === '') return total;
+                else {
+                    return total + parseFloat(item.ItemPrice.toString()) * parseFloat(item.ItemQuantity.toString())
+                }
+
+            }, 0);
+            return {OrderTotal: total};
+        } else {
+            return null;
+        }
+    }
+
     onChange = (e) => {
         this.setState({[e.target.name]: e.target.value});
     }
     onChangeOffer = selectedOption => {
         this.setState(
-            {ItemName: selectedOption != null ? selectedOption.value:"" },
+            {ItemName: selectedOption != null ? selectedOption.value : ""},
             () => console.log(`Option selected:`, this.state.ItemName)
         );
     };
 
     addOrderItem = (e) => {
         e.preventDefault();
-        const {order, firestore, departmentsAll} = this.props;
+        const {order, firestore} = this.props;
         let newOrderItem = {
             ItemName: this.state.ItemName,
             ItemQuantity: this.state.ItemQuantity,
@@ -50,15 +67,15 @@ class OrderDetails extends Component {
 
     render() {
         const {order, orderItems, departmentsAll, products} = this.props;
-        const {showNewItem, ItemQuantity, ItemPrice, ItemName, ItemDepartment} = this.state;
+        const {showNewItem, ItemQuantity, ItemPrice, ItemDepartment, OrderTotal} = this.state;
         console.log("rendered");
 
         if (order && orderItems && departmentsAll && products) {
             const ProductsNames = Array.from(products, prd => ({value: prd.Name, label: prd.Name}));
             const OrderDepartmentNames = Array.from(orderItems, item => (item.DepartmentName));
-            const DepartmentFromOrder = departmentsAll.reduce((newArray,IterDpt)=>{
-               return OrderDepartmentNames.includes( IterDpt.Name)  ? [...newArray,IterDpt]: newArray;
-            },[]);
+            const DepartmentFromOrder = departmentsAll.reduce((newArray, IterDpt) => {
+                return OrderDepartmentNames.includes(IterDpt.Name) ? [...newArray, IterDpt] : newArray;
+            }, []);
 
             let ItemForm = '';
             if (showNewItem) {
@@ -79,8 +96,8 @@ class OrderDetails extends Component {
                                     options={ProductsNames}
                                     placeholder={"Название"}
                                     isClearable
+                                    required
                                     onChange={this.onChangeOffer}
-                                    
                                 />
                             </div>
                             <div className="col-12 col-md-10 my-2">
@@ -141,9 +158,24 @@ class OrderDetails extends Component {
                             <Link to={"/"} className="btn btn-link">
                                 <i className="fas fa-arrow-circle-left"></i> back to Dashboard
                             </Link>
-                            <h3 className="">№: {order.CreationDate}
-                                <a href="#!" onClick={() => this.setState({showNewItem: !this.state.showNewItem})}>
-                                    <i className="fas fa-plus fa-pull-right mr-4"></i></a></h3>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-sm-4">
+                            <h5 className="text-secondary">Заказ: {order.Name}
+                            </h5>
+                        </div>
+                        <div className="col-sm-4">
+                            <h5 className="text-secondary">От: {order.CreationDate}
+                            </h5>
+                        </div>
+                        <div className="col-sm-2">
+                            <h5 className="text-primary">Сумма: {OrderTotal}р.
+                            </h5>
+                        </div>
+                        <div className="col-sm-2">
+                            <a href="#!" onClick={() => this.setState({showNewItem: !this.state.showNewItem})}>
+                                <i className="fas fa-plus fa-pull-right fa-2x"></i></a>
                         </div>
                     </div>
                     <div className="row">
@@ -157,7 +189,7 @@ class OrderDetails extends Component {
                                 <div className="accordion" id={"OrdersAccordion" + department.id}>
                                     <div className="card">
                                         <div className="card-header" id={"heading_" + department.id}>
-                                            <a className="btn btn-link btn-block text-left text-xl-left"
+                                            <a href="/#" className="btn btn-link btn-block text-left text-xl-left"
                                                type="button"
                                                data-toggle="collapse" data-target={"#collapse_" + department.id}
                                                aria-expanded="true"

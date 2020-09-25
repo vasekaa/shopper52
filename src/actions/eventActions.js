@@ -1,8 +1,7 @@
 import {
     GET_EVENTS,
     ADD_EVENT,
-    DELETE_EVENT,
-    EVENTS_ERROR
+    DELETE_EVENT
 } from './types';
 import axios from 'axios';
 

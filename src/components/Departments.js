@@ -16,8 +16,8 @@ class Departments extends Component {
         const {firestore, Departments} = this.props;
         const Department = {...this.state};
         if (Departments.filter((dpt) =>
-            dpt.Name == Department.Name
-        ).length == 0)
+            dpt.Name === Department.Name
+        ).length === 0)
             firestore.add({collection: "Departments"}, Department).then(()=>this.setState({Name:""}));
     }
     onChange = (e) => {

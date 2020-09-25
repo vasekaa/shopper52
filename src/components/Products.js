@@ -4,8 +4,7 @@ import PropTypes from 'prop-types';
 import {firestoreConnect} from "react-redux-firebase";
 import {compose} from "redux";
 import classnames from 'classnames';
-import Select from 'react-select';
-import Creatable, {makeCreatableSelect} from 'react-select/creatable';
+import Creatable from 'react-select/creatable';
 import Spinner from "./layout/spinner";
 
 
@@ -22,8 +21,8 @@ class Products extends Component {
         const {firestore, Products} = this.props;
         const Product = {...this.state};
         if (Products.filter((prd) =>
-            prd.Name == Product.Name
-        ).length == 0)
+            prd.Name === Product.Name
+        ).length === 0)
             firestore.add({collection: "Products"}, Product).then(() => this.setState({
                 Name: "",
                 Price: "",

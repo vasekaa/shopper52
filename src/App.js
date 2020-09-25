@@ -6,7 +6,7 @@ import Orders from "./components/Orders";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import {Provider} from 'react-redux';
-import AddEvent from "./components/AddOrder";
+import AddOrder from "./components/AddOrder";
 import OrderDetails from "./components/OrderDetails";
 
 import {store, rrfProps} from "./store";
@@ -27,7 +27,7 @@ function App() {
                             <Switch>
                                 <Route exact path="/" component={UserIsAuthenticated(Orders)}/>
                                 <Route exact path="/departments" component={UserIsAuthenticated(Departments)}/>
-                                <Route exact path="/order/add/" component={UserIsAuthenticated(AddEvent)}/>
+                                <Route exact path="/order/add/" component={UserIsAuthenticated(AddOrder)}/>
                                 <Route exact path="/order/:id" component={UserIsAuthenticated(OrderDetails)}/>
                                 <Route exact path="/products" component={UserIsAuthenticated(Products)}/>
                                 <Route exact path="/login" component={UserIsNotAuthenticated(Login)}/>

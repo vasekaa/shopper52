@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
-import {firebaseConnect, firestoreConnect} from "react-redux-firebase";
+import {firebaseConnect} from "react-redux-firebase";
 import {compose} from "redux";
-import classnames from 'classnames';
+//import classnames from 'classnames'; ToDo check why stoped using
 import {NotifyUser} from "../actions/notifyActions";
 import Alert from "./layout/Alert";
-
+import HomePage from "./layout/HomePage";
 
 class Login extends Component {
     state = {
@@ -17,7 +17,7 @@ class Login extends Component {
     submit = (e) => {
         e.preventDefault();
         const {email, password} = this.state;
-        const {firebase,NotifyUser} = this.props;
+        const {firebase, NotifyUser} = this.props;
         firebase.login({
             email,
             password
@@ -36,9 +36,14 @@ class Login extends Component {
             <div className="container">
                 <div className="row">
                     <div className="col-12 col-md-8 col-lg-6 mx-auto">
+                        <HomePage></HomePage>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-12 col-md-8 col-lg-6 mx-auto">
                         <div className="card">
                             <div className="card-body">
-                                {message?(<Alert message={message} messageType={messageType}></Alert>):null}
+                                {message ? (<Alert message={message} messageType={messageType}></Alert>) : null}
                                 <h3 className="text-center pb-4 pt-3">
                                     <span className="text-primary"><i className="fas fa-lock"/>Login</span>
                                 </h3>
@@ -77,7 +82,7 @@ class Login extends Component {
 
 Login.propTypes = {
     firestore: PropTypes.object.isRequired,
-    notify:PropTypes.object.isRequired
+    notify: PropTypes.object.isRequired
 }
 
 export default compose(firebaseConnect(),

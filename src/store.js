@@ -1,11 +1,9 @@
-import React from 'react'
-import {render} from 'react-dom'
-import {Provider} from 'react-redux'
+//import React from 'react' ToDo check if can beremoved, camefrom example
 import firebase from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/firestore' // <- needed if using firestore
-import {createStore, combineReducers, compose} from 'redux'
-import {ReactReduxFirebaseProvider, firebaseReducer} from 'react-redux-firebase'
+import {createStore, combineReducers} from 'redux'
+import {firebaseReducer} from 'react-redux-firebase'
 import {createFirestoreInstance, firestoreReducer} from 'redux-firestore' // <- needed if using firestore
 import notifyReducer from "./reducers/notifyReducer";
 

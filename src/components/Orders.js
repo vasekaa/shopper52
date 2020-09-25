@@ -1,14 +1,13 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
-import {getEvents} from "../actions/eventActions";
 import Order from "./Order";
 import {firestoreConnect} from "react-redux-firebase";
 import {compose} from "redux";
 import Spinner from "./layout/spinner";
+import {v4 as uuidv4} from "uuid";
 
 class Orders extends Component {
-
     onNewOrderClick = (e) => {
         e.preventDefault();
         const today = new Date();
@@ -27,34 +26,37 @@ class Orders extends Component {
             Status:
                 "NEW",
             isTemplate:
-                true
+                true,
+            Name:dateTime,
+            Code:uuidv4()
         };
 
 
         firestore.add({collection: "Orders"}, newOrder).then(() => this.props.history.push("/"));
     }
-    onClick = (id) => {
+    onClick (id,e){
         this.props.history.push(`/order/${id}`);
     }
 
     render() {
         const {Orders} = this.props;
-        //const Orders = [{id:"1",title:"1",body:"tesst"}]
         if (Orders)
             return (
-                <div className="container">
+                <div className="container mt-3">
                     <div className="row">
-                        <ul className="list-group col-12">
-                            {Orders.map(order => (
-                                <li className="list-group-item" onClick={this.onClick.bind(this, order.id)}>
-                                    <Order Order={order}/>
-                                </li>
-                            ))}
-                        </ul>
+                        <div className="col-10 mx-auto">
+                            <ul className="list-group">
+                                {Orders.map((order,index) =>
+                                    <li className="list-group-item" onClick={(e) => this.onClick(order.id, e)}>
+                                        <Order Order={order} key={index}/>
+                                    </li>
+                                )}
+                            </ul>
+                        </div>
                     </div>
-                    <div className="row justify-content-end">
-                        <div className="col-md-4 col-lg-2">
-                            <i className="btn btn-primary btn-block" onClick={this.onNewOrderClick}>Add</i>
+                    <div className="row mt-1 justify-content-md-center">
+                        <div className="col-10 mx-auto">
+                            <i className="btn btn-primary btn-block" onClick={this.onNewOrderClick}>Новый</i>
                         </div>
                     </div>
                 </div>

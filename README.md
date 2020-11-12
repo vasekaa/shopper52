@@ -1,6 +1,7 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts qwe
+## Available Scripts 
+## Active Zakupi Application Sources KEY ZAKUPIXYZ
 
 In the project directory, you can run:
 

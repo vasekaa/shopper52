@@ -15,6 +15,8 @@ import Departments from "./components/Departments";
 import Products from "./components/Products";
 import Login from "./components/Login";
 import {UserIsAuthenticated,UserIsNotAuthenticated} from "./helpers/auth";
+import SignUpWithSocials from "./components/SignInWithSocials";
+import SignInWithFB from "./components/SignInWithFB";
 
 function App() {
     return (
@@ -31,6 +33,9 @@ function App() {
                                 <Route exact path="/order/:id" component={UserIsAuthenticated(OrderDetails)}/>
                                 <Route exact path="/products" component={UserIsAuthenticated(Products)}/>
                                 <Route exact path="/login" component={UserIsNotAuthenticated(Login)}/>
+                                <Route exact path="/signInSocials" component={UserIsNotAuthenticated(SignUpWithSocials)}/>
+                                <Route exact path="/signInSocialsFB" component={UserIsNotAuthenticated(SignInWithFB)}/>
+
                             </Switch>
                         </div>
                     </div>

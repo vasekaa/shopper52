@@ -14,7 +14,7 @@ class Orders extends Component {
         const date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
         const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
         const dateTime = date + ' ' + time;
-        const {firestore} = this.props;
+        const {firestore, auth} = this.props;
 
         const newOrder = {
             CompleationDate:
@@ -27,26 +27,30 @@ class Orders extends Component {
                 "NEW",
             isTemplate:
                 true,
-            Name:dateTime,
-            Code:uuidv4()
+            Name: dateTime,
+            Code: uuidv4(),
+            Author: auth.uid
         };
 
 
         firestore.add({collection: "Orders"}, newOrder).then(() => this.props.history.push("/"));
     }
-    onClick (id,e){
+
+    onClick(id, e) {
         this.props.history.push(`/order/${id}`);
     }
 
     render() {
-        const {Orders} = this.props;
+        const {Orders, auth} = this.props;
         if (Orders)
             return (
                 <div className="container mt-3">
                     <div className="row">
                         <div className="col-10 mx-auto">
                             <ul className="list-group">
-                                {Orders.map((order,index) =>
+                                {Orders.filter((order) => {
+                                    return order.Author === auth.uid
+                                }).map((order, index) =>
                                     <li className="list-group-item" onClick={(e) => this.onClick(order.id, e)}>
                                         <Order Order={order} key={index}/>
                                     </li>
@@ -73,4 +77,10 @@ Orders.propTypes = {
     Orders: PropTypes.array
 }
 
-export default compose(firestoreConnect([{collection: 'Orders'}]), connect((state, props) => ({Orders: state.firestore.ordered.Orders})))(Orders);
+export default compose(firestoreConnect([{collection: 'Orders'}]), connect(
+    (state, props) => (
+        {
+            Orders: state.firestore.ordered.Orders,
+            auth: state.firebase.auth
+        }
+    )))(Orders);

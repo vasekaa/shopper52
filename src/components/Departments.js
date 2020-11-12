@@ -8,17 +8,18 @@ import Spinner from "./layout/spinner";
 class Departments extends Component {
     state = {
         Name: "",
-        Order: "1"
+        Order: "1",
+        Author: ""
     }
 
     onNewDepartmentClick = (e) => {
         e.preventDefault();
-        const {firestore, Departments} = this.props;
-        const Department = {...this.state};
+        const {firestore, Departments,auth} = this.props;
+        const Department = {...this.state,Author:auth.uid};
         if (Departments.filter((dpt) =>
             dpt.Name === Department.Name
         ).length === 0)
-            firestore.add({collection: "Departments"}, Department).then(()=>this.setState({Name:""}));
+            firestore.add({collection: "Departments"}, Department).then(() => this.setState({Name: ""}));
     }
     onChange = (e) => {
         this.setState({[e.target.name]: e.target.value});
@@ -79,7 +80,18 @@ class Departments extends Component {
 
 Departments.propTypes = {
     firestore: PropTypes.object.isRequired,
-    Departments: PropTypes.array
+    Departments: PropTypes.array,
+    auth: PropTypes.object
 }
 
-export default compose(firestoreConnect([{collection: 'Departments'}]), connect((state, props) => ({Departments: state.firestore.ordered.Departments})))(Departments);
+export default compose(firestoreConnect([{collection: 'Departments'}]),
+    connect((state, props) =>
+        (
+            {
+                ...props,
+                Departments: state.firestore.ordered.Departments,
+                auth: state.firebase.auth
+            }
+        )
+    )
+)(Departments);

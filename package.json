@@ -13,7 +13,7 @@
     "classnames": "^2.2.6",
     "firebase": "^7.14.6",
     "history": "^4.10.1",
-    "jquery": "^1.9.1",
+    "jquery": "^3.5.0",
     "popper.js": "^1.16.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
